@@ -4,7 +4,7 @@
 // === Build directives that can appear in the source code ===
 //
 // # EMBED <filename or glob pattern>  [ | <function> [ | ...] ]
-// Embeds an external file in the source code as a gzipped and base64-encoded string;
+// Adds an external file to the resource data after __halt_compiler;
 // optional filter functions can be "piped" at the end of the line;
 // multiple files can be specified with glob syntax. E.g., classes/*.php
 //
@@ -32,14 +32,14 @@
 
 // === build script configuration ===
 $inputfile  = 'phpliteadmin-build-template.php';
-$outputfile = 'phpliteadmin.php';
+$outputfile = 'sqlite-lantern.php';
 date_default_timezone_set('UTC');
 
 // === identifiers recognized in EXPORT and ###something### directives ===
 $build_data = array(
 	// used for resource embedding
 	'resources' => array(),
-	'resourcesize' => 0,
+	'resource_data' => '',
 	// custom variables
 	'build_date' => date('Y-m-d'),
 	'build_year' => date('Y'),
@@ -49,7 +49,7 @@ $build_data = array(
 <!doctype html>
 <html><head>
 	<meta charset="utf-8" />
-	<title>phpLiteAdmin build script</title>
+	<title>SQLite Lantern build script</title>
 	<style type="text/css">
 		body { font-family: monospace; color: #222; }
 		span { color: #22A; }
@@ -63,7 +63,7 @@ $build_data = array(
 $output = '';
 error_reporting(E_ALL);
 
-echo "<h1>Building phpLiteAdmin</h1><ol>";
+echo "<h1>Building SQLite Lantern</h1><ol>";
 
 // load the build template only this file will be parsed for build directives
 echo "<li>Loading template: <span>{$inputfile}</span>";
@@ -95,9 +95,9 @@ $output = preg_replace('@(\r?\n?)^#\s*REMOVE_FROM_BUILD.*?^#\s*END\s+REMOVE_FROM
 echo "<li>Removing build comments";
 $output = preg_replace('@\r?\n#[^\r\n]*@m', "", $output);
 
-// save result script to file
+// Append resource bytes after processing all source directives.
 echo "<li>Saving code to <span>{$outputfile}</span>";
-file_put_contents($outputfile, $output);
+file_put_contents($outputfile, rtrim($output, "\r\n")."\n".$build_data['resource_data']);
 
 
 // ===== end of main code, support functions follow =====
@@ -170,8 +170,6 @@ function replace_embed($m)
 		$filters = array();
 	}
 
-	$result = '';
-
 	global $build_data;
 	$matching_files = glob($m['pattern']);
 	if ($matching_files) {
@@ -185,14 +183,10 @@ function replace_embed($m)
 					$data = call_user_func($function, $data);
 				}
 
-				// encode filtered data,
-	//			$data = base64_encode(gzencode($data)); // disabled after #197
-				$result .= $data;
-
-				// evaluate size and position relative to __COMPILER_HALT_OFFSET__
-				$size = strlen($data);
-				$build_data['resources'][$filename] = array($build_data['resourcesize'], $size);
-				$build_data['resourcesize'] += $size;
+				// Record the offset in the byte-for-byte resource payload.
+				$offset = strlen($build_data['resource_data']);
+				$build_data['resources'][$filename] = array($offset, strlen($data));
+				$build_data['resource_data'] .= $data;
 			} else {
 				echo "<li class='warn'><span>{$filename}</span> - cannot read file";
 			}
@@ -201,7 +195,7 @@ function replace_embed($m)
 		echo "<li class='warn'><span>{$m['pattern']}</span> - no files matching";
 	}
 
-	return $result;
+	return '';
 }
 
 function replace_export($m)

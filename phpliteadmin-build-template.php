@@ -30,7 +30,7 @@ function getInternalResource($res) {
 # Important: no semi-colon after the call to __halt_compiler, so the parser can consume
 # the closing tag
 __halt_compiler() ?>
-# EMBED resources/phpliteadmin.css | minify_css
-# EMBED resources/phpliteadmin.js | minify_js
+# EMBED resources/phpliteadmin.css
+# EMBED resources/phpliteadmin.js
 # EMBED resources/favicon.ico | base64_encode
 

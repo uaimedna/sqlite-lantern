@@ -1,6 +1,7 @@
 
 Project: phpLiteAdmin (https://www.phpliteadmin.org/)
-Version: 1.9.9-dev
+Upstream version: 1.9.9-dev
+Modified 2026-11-23 for SQLite Lantern, with a redesigned workspace and updated SQL editor.
 Summary: PHP-based admin tool to manage SQLite2 and SQLite3 databases on the web
 Last updated: ###build_date###
 Developers:

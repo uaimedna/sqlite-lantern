@@ -21,7 +21,6 @@ $lang = array(
 	"save_as" => "Salvar Como",
 	"options" => "Opções",
 	"no_opt" => "Sem opções",
-	"help" => "Ajuda",
 	"installed" => "instalado",
 	"not_installed" => "não instalado",
 	"done" => "feito",
@@ -125,7 +124,6 @@ $lang = array(
 	"affected" => "afetado",
 	"blank_index" => "O nome do índice não pode ficar em branco.",
 	"one_index" => "Você deve especificar ao menos uma coluna índice.",
-	"docu" => "Documentação",
 	"license" => "Licença",
 	"proj_site" => "Sítio do Projeto",
 	"bug_report" => "Isso pode ser um bug que precisa ser reportado",
@@ -232,7 +230,6 @@ $lang = array(
 	"warn_passwd" => "Você está usando a senha-padrão, o que pode ser perigoso. Você pode mudar isso facilmente no topo de %s.",
 	"sel_state" => "Selecionar Comando",
 	"delimit" => "Delimitador",
-	"back_top" => "Voltar para cima",
 	"choose_f" => "Escolher Arquivo",
 	"instead" => "Ao invés de",
 	"define_in_col" => "Definir colunas-índice(s)",
@@ -256,26 +253,6 @@ $lang = array(
 	"alter_col_not_recognized" => "não conseguiu reconhecer nome de coluna, novo ou antigo",
 	"alter_unknown_operation" => "Operação ALTER desconhecida!",
 	
-	/* Help documentation */
-	"help_doc" => "Documento de Ajuda",
-	"help1" => "Extensões da Biblioteca SQLite",
-	"help1_x" => "%s usa extensões da biblioteca PHP que permitem a interação com bancos de dados SQLite. Por enquanto, %s suporta PDO, SQLite3 e SQLiteDatabase. Ambos PDO e SQLite3 lidam com a versão 3 do SQLite, enquanto o SQLiteDatabase lida com a versão 2. Portanto, se a sua instalação de PHP inclui mais do que uma biblioteca de extensão SQLite, o PDO e SQLite3 vão ter a precedência para fazer uso de tecnologi amais moderna. No entanto, se você tem bancos de dados que são de versão 2 do SQLite, o %s vai ser forçado a usar o SQLiteDatabase para esses bancos de dados somente. Nem todos os bancos de dados precisam ser de mesma versão. Durante a criação do banco de dados, entretanto, a extensão mais moderna será usada.",
-	"help2" => "Criando Novo Banco de Dados",
-	"help2_x" => "Quando você cria um novo banco de dados o nome que você escrever vai ser acrescentado de uma extensão(.db, .db3, .sqlite etc.) se você não a colocar por si mesmo(a).O banco de dados será criado no diretório que você especificou com a variável \$directory.",
-	"help3" => "Tabelas vs. Vistas (Views)",
-	"help3_x" => "Na página central do banco de dados existe uma lista de tabelas e vistas. Já que as vistas (Views) são somente leitura, certas operações estão desabilitadas. Essas operações desabilitadas se tornarão aparentes pela omissão no local onde deveriam aparecer na linha para vista. Se você quiser mudar esse dado para uma vista, você tem que eliminar essa vista (DROP) e criar uma nova com o comando SELECT apropriado que pesquise outras tabelas. Para mais informações, veja <a href='http://en.wikipedia.org/wiki/View_(database)' target='_blank'>http://en.wikipedia.org/wiki/View_(database)</a>",
-	"help4" => "Escrevendo um Comando SELECT para Nova Vista",
-	"help4_x" => "Quando criar uma nova vista você deve escrever um comando SQL SELECT que vai usá-la como seu dado. Uma vista é meramente uma tabela 'read-only' que pode ser acessada e pesquisada como uma tabela comum, exceto que não pdoe ser modificada por inserção, edição de coluna ou de linha. É somente usada para pegar dados de maneira conveniente.",
-	"help5" => "Exportar Estrutura Para Arquivo SQL",
-	"help5_x" => "Durante o processo de exportação par aum arquivo SQL, você pode escolher incluir as pesquisas que criaram a tabela e colunas.",
-	"help6" => "Exportar Dados para arquivo SQL",
-	"help6_x" => "Durante o procesos de exportação para um arquivo SQL, você pode optar por incluir as pesquisas (Queries) que preenchem a(s) tabela(s) com os dados atuais da(s) tabela(s)).",
-	"help7" => "Adicionar Drop Table a um Arquivo SQL Exportado",
-	"help7_x" => "Durante o processo de exportação para um arquivo SQL, você pode optar por incluir as pesquisas (Queries) para eliminar (DROP) as tabelas existentes antes de adicioná-las para que não surjam problemas quando for tentar criar tabelas que já existam.",
-	"help8" => "Adicionar a Transação para Arquivo SQL Exportado",
-	"help8_x" => "Durante o processo de exportação para um arquivo SQL, você pode optar por envolver as pesquisas (Queries) em uma TRANSACTION fazendo com que, se um erro surgir em qualquer tempo durante a importação usando o arquivo exportado, o banco de dados possa ser revertido para o seu estado original, impedindo parcialmente que a atualização de dados ocorra e preencha o banco de dados.",
-	"help9" => "Adicionar comentários para o arquivo SQL exportado",
-	"help9_x" => "Durante o processo de exportação para um arquivo SQL você pode optar por incluir comentários que expliquem cada passo do processo, fazendo com que uma pessoa possa entender melhor o que está acontecendo."
 	
 	);
 ?>

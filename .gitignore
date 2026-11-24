@@ -1,0 +1,10 @@
+/sqlite-lantern.php
+/phpliteadmin.config.php
+*.db
+*.db3
+*.sqlite
+*.sqlite3
+*-journal
+*-shm
+*-wal
+.DS_Store

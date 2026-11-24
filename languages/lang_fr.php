@@ -22,7 +22,6 @@ $lang = array(
 	"save_as" => "Enregistrer sous",
 	"options" => "Options",
 	"no_opt" => "Pas d'options",
-	"help" => "Aide",
 	"installed" => "Installé",
 	"not_installed" => "Non installé",
 	"done" => "Effectué",
@@ -126,7 +125,6 @@ $lang = array(
 	"affected" => "affectée(s)",
 	"blank_index" => "Le nom de l'Index ne peut être vide.",
 	"one_index" => "Vous devez spécifier au moins une colonne Index.",
-	"docu" => "Documentation",
 	"license" => "Licence",
 	"proj_site" => "Site du projet",
 	"bug_report" => "C'est peut être une erreur, merci de la signaler à ",
@@ -233,7 +231,6 @@ $lang = array(
 	"counting_skipped" => "Le dénombrement des enregistrements n'a pas été effectué pour certaines tables car votre base de données est volumineuse et certaines de ses tables n'ont pas de clés primaires rendant leur dénombrement particulièrement long à calculer. Ajoutez une clé primaires à ses tables ou %sforcer le dénombrement%s.",
 	"sel_state" => "Choisir une déclaration",
 	"delimit" => "Délimiteur",
-	"back_top" => "Retour au haut de la page",
 	"choose_f" => "Choisir un fichier",
 	"instead" => "Au lieu de ",
 	"define_in_col" => "Définir le(s) colonne(s) de l'index",
@@ -257,26 +254,6 @@ $lang = array(
 	"alter_col_not_recognized" => "impossible de reconnaitre le nouvel ou ancien nom de la colonne",
 	"alter_unknown_operation" => "opération ALTER inconnue !",
 	
-	/* Help documentation */
-	"help_doc" => "Aide",
-	"help1" => "Extensions de la bibliothèque SQLite",
-	"help1_x" => "%s utilise les extensions de la bibliothèque PHP permettant d'accéder à des bases de données SQLite. Actuellement, %s supporte PDO, SQLite3, et SQLiteDatabase. PDO et SQLite3 fonctionne avec la version 3 de SQLite, alors que SQLiteDatabase ne fonctionne qu'avec la version 2. Donc, si votre installation PHP inclus plus d'une extension de la bibliothèque SQLite, PDO et SQLite3 prendront le pas, permettant ainsi d'utiliser la meilleure technologie. Néanmoins, si vous avez des bases de données en version 2 de SQLite, %s forcera l'utilisation de SQLiteDatabase pour ces bases seules. Toutes les bases n'ont pas besoin d'être de même version. Au cours de la création de bases de données, l'extension la plus performante sera bien entendu utilisée.",
-	"help2" => "Création d'une nouvelle base",
-	"help2_x" => "À la création d'une nouvelle base de données, en cas d'oubli, l'extension appropriée (.db, .db3, .sqlite, etc.) sera automatiquement ajouté au nom saisie. La base sera créée dans le répertoire que vous avez spécifié comme variable \$directory.",
-	"help3" => "Tables comparées aux Vues",
-	"help3_x" => "Sur la page principale de la base est présente une liste de tables et de Vues. Les Vues étant en lecture seules, certaines opérations seront désactivées. Celles-ci n'apparaitront donc pas là où elles devraient être dans la ligne d'une Vue. Si vous souhaitez modifier les données d'une Vue, vous devrez supprimer cette Vue et en créer une nouvelle avec la déclaration SELECT appropriée pour interroger d'autres tables. Pour plus d'information, voir <a href='http://en.wikipedia.org/wiki/View_(database)' target='_blank'>http://en.wikipedia.org/wiki/View_(database)</a>",
-	"help4" => "Écrire une déclaration SELECT pour une nouvelle Vue",
-	"help4_x" => "À la création d'une nouvelle Vue, vous devez écrire une déclaration SQL SELECT qui permettra d'en utiliser ses données. Une Vue est tout simplement une table en lecture seule qui peut être accédée et lue comme une table standard, excepté qu'elle ne peut pas être modifiée via une insertion, une modification de colonne ou de ligne. Elle fournit juste un moyen pratique de lire des données.",
-	"help5" => "Export de la structure dans un fichier SQL",
-	"help5_x" => "Au cours du processus d'export vers un fichier SQL, vous pouvez faire le choix d'inclure les requêtes responsables de la création de la table et ses colonnes.",
-	"help6" => "Export des données dans un fichier SQL",
-	"help6_x" => "Au cours du processus d'export vers un fichier SQL, vous pouvez faire le choix d'inclure les requêtes qui rempliront la ou les tables avec les enregistrement actuels.",
-	"help7" => "Ajout d'un Drop Table au fichier d'export SQL",
-	"help7_x" => "Au cours du processus d'export vers un fichier SQL, vous pouvez faire le choix d'inclure les requêtes qui supprimeraient des tables existantes avant leur ajout, ce qui éviterait les erreurs gérer par la tentative de créer un table déjà existante.",
-	"help8" => "Ajout de Transaction au fichier d'export SQL",
-	"help8_x" => "Au cours du processus d'export vers un fichier SQL, vous pouvez faire le choix de placer les requêtes dans des TRANSACTION, ainsi en cas d'erreur lors de l'import du fichier, la base pourra être rétablie dans son état précédent, empêchant des données partiellement à jour d'être inscrite dans la base.",
-	"help9" => "Ajout des commentaires au fichier d'export SQL",
-	"help9_x" => "Au cours du processus d'export vers un fichier SQL, vous pouvez inclure des commentaires expliquant chaque étape de celui-ci, donnant ainsi une meilleur compréhension à un utilisateur de ce qui se passe."
 	
 	);
 ?>

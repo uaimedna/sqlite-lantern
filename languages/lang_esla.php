@@ -32,7 +32,6 @@ $lang = array(
 	"save_as" => "Guardar Como",
 	"options" => "Opciones",
 	"no_opt" => "Sin opciones",
-	"help" => "Ayuda",
 	"installed" => "instalado",
 	"not_installed" => "no instalado",
 	"done" => "hecho",
@@ -137,7 +136,6 @@ $lang = array(
 	"affected" => "afectado",
 	"blank_index" => "El nombre del &iacute;ndice, no puede estar en blanco.",
 	"one_index" => "Debe especificar al menos una columna de &iacute;ndice.",
-	"docu" => "Documentaci&oacute;n",
 	"license" => "Licencia",
 	"proj_site" => "Sitio del proyecto",
 	"bug_report" => "Esto puede ser un error que debe ser reportado",
@@ -240,7 +238,6 @@ $lang = array(
 	"warn_passwd" => "Est&aacute; usando la contrase&ntilde;a por defecto, y puede ser peligrosa. Puede cambiarla f&aacute;cilmente en la parte superior de %s.",
 	"sel_state" => "Seleccione declaraci&oacute;n",
 	"delimit" => "Delimitador",
-	"back_top" => "Volver al principio",
 	"choose_f" => "Elija un Archivo",
 	"instead" => "En lugar de",
 	"define_in_col" => "Defina indice de columna(s)",
@@ -264,26 +261,6 @@ $lang = array(
 	"alter_col_not_recognized" => "no se pudo reconocer el nuevo o viejo nombre de la columna",
 	"alter_unknown_operation" => "Operaci&oacute; ALTER desconocida!",
 	
-	/* Help documentation */
-	"help_doc" => "Documentaci&oacute;n de Ayuda",
-	"help1" => "Librer&iacute;a de Extensiones SQLite",
-	"help1_x" => "%s utiliza extensiones de la biblioteca de PHP que permiten la interacci&oacute;n con bases de datos SQLite. Actualmente,%s soporta PDO, SQLite3 y SQLiteDatabase. PDO y SQLite3 lidian con la versi&oacute;n 3 de SQLite, mientras que SQLiteDatabase trata con la versi&oacute;n 2. Por lo tanto, si su instalaci&oacute;n de PHP incluye m&aacute;s de una extensi&oacute;n de la biblioteca SQLite,PDO y SQLite3 tendr&aacute;n prioridad para hacer uso de la mejor tecnolog&iacute;a. Sin embargo, si tiene bases de datos existentes que son de la versi&oacute;n 2 de SQLite,%s se ven obligados a utilizar SQLiteDatabase solo para aquellas bases de datos. No todas las bases de datos tienen que ser de la misma versi&oacute;n. Durante la creaci&oacute;n de bases de datos, sin embargo, se utilizar&aacute; la extensi&oacute;n m&aacute;s avanzada.",
-	"help2" => "Crear una nueva base de datos",
-	"help2_x" => "Cuando se crea una nueva base de datos, el nombre que haya especificado se anexar&aacute; con la extensi&oacute;n de archivo apropiado (.db, .db3, .sqlite, etc.) si no se incluye lo mismo. La base de datos se crear&aacute; en el directorio especificado en la variable \$directory.",
-	"help3" => "Tablas vs. Views",
-	"help3_x" => "En la p&aacute;gina de base de datos principal, hay una lista de tablas y view. Las view son de s&oacute;lo lectura, por lo que ciertas operaciones se desactivar&aacute;n. Estas operaciones con discapacidad ser&aacute; evidentes por su omisi&oacute;n en el lugar donde deben aparecer en la fila para ver. Si desea cambiar los datos en una view, Tienes que dejar ese punto de vista y crear una nueva vista con la correspondiente instrucci&oacute;n SELECT que consulta otras tablas existentes. Para obtener m&aacute;s informaci&oacute;n, consulte <a href='http://en.wikipedia.org/wiki/View_(database)' target='_blank'>http://es.wikipedia.org/wiki/Vista_(base_de_datos)</a>",
-	"help4" => "Escribir una instrucci&oacute;n Select para una Nueva View",
-	"help4_x" => "Cuando se crea una nueva view, usted debe escribir una instrucci&oacute;n SQL SELECT que utilizar&aacute; como sus datos. Una view es simplemente una tabla de s&oacute;lo lectura que se puede acceder y consultar como una tabla regular, excepto que no se puede modificar a trav&eacute;s de la inserci&oacute;n, edici&oacute;n de columna o fila. Se utiliza &uacute;nicamente para la busqueda de datos.",
-	"help5" => "Exportar Estructura a un Archivo SQL",
-	"help5_x" => "Durante el proceso de exportaci&oacute;n a un Archivo SQL, puede optar por incluir las consultas que crean tablas y columnas.",
-	"help6" => "Exportar Datos a un Archivo SQL",
-	"help6_x" => "Durante el proceso de exportaci&oacute;n a un Archivo SQL, puede optar por incluir las consultas que prueban la tabla(s) con los registros actuales de la misma.",
-	"help7" => "Agregar Drop Table a Archivo SQL Exportado",
-	"help7_x" => "Durante el proceso para exportar a un archivo SQL, puede optar por incluir las consultas para eliminar las tablas ya existentes antes de a&ntilde;adirlos. De forma que no se produzcan problemas al intentar crear las tablas que ya existen.",
-	"help8" => "Agregar Transaction a Archivo SQL Exportado",
-	"help8_x" => "Durante el proceso para exportar a un archivo SQL, puede optar por concluir las consultas en torno a una Transaction de modo que si se produce un error en cualquier momento durante el proceso de importaci&oacute;n bas&aacute;ndose en el archivo exportado, la base de datos se puede revertir a su estado anterior, lo que impide parcialmente datos actualizados de poblar la base de datos.",
-	"help9" => "Agregar Comentarios a Archivo SQL Exportado",
-	"help9_x" => "Durante el proceso para exportar a un archivo SQL, puede optar por incluir comentarios que explican cada paso del proceso para que un ser humano puede entender mejor lo que est&aacute; sucediendo."
 	
 	);
 ?>

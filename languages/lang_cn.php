@@ -22,7 +22,6 @@ $lang = array(
 	"save_as" => "另存为",
 	"options" => "选项",
 	"no_opt" => "无选项",
-	"help" => "帮助",
 	"installed" => "installed",
 	"not_installed" => "not installed",
 	"done" => "done",
@@ -129,7 +128,6 @@ $lang = array(
 	"affected" => "被影响",
 	"blank_index" => "索引名必须非空.",
 	"one_index" => "必须至少指定一个索引列.",
-	"docu" => "在线文档",
 	"license" => "使用协议",
 	"proj_site" => "官方网站",
 	"bug_report" => "这或许是一个需要汇报的bug在",
@@ -240,7 +238,6 @@ $lang = array(
 	"counting_skipped" => "Counting of records has been skipped for some tables because your database is comparably big and some tables don't have primary keys assigned to them so counting might be slow. Add a primary key to these tables or %sforce counting%s.",
 	"sel_state" => "选择语句",
 	"delimit" => "分隔符",
-	"back_top" => "回到上面",
 	"choose_f" => "选择文件",
 	"instead" => "替代",
 	"define_in_col" => "定义索引列",
@@ -264,26 +261,6 @@ $lang = array(
 	"alter_col_not_recognized" => "could not recognize new or old column name",
 	"alter_unknown_operation" => "Unknown ALTER operation!",
 	
-	/* Help documentation */
-	"help_doc" => "帮助文档",
-	"help1" => "SQLite 库扩展",
-	"help1_x" => "%s uses PHP library extensions that allow interaction with SQLite databases. Currently, %s supports PDO, SQLite3, and SQLiteDatabase. Both PDO and SQLite3 deal with version 3 of SQLite, while SQLiteDatabase deals with version 2. So, if your PHP installation includes more than one SQLite library extension, PDO and SQLite3 will take precedence to make use of the better technology. However, if you have existing databases that are of version 2 of SQLite, %s will be forced to use SQLiteDatabase for only those databases. Not all databases need to be of the same version. During the database creation, however, the most advanced extension will be used.",
-	"help2" => "创建新数据库",
-	"help2_x" => "When you create a new database, the name you entered will be appended with the appropriate file extension (.db, .db3, .sqlite, etc.) if you do not include it yourself. The database will be created in the directory you specified as the \$directory variable.",
-	"help3" => "Tables vs. Views",
-	"help3_x" => "On the main database page, there is a list of tables and views. Since views are read-only, certain operations will be disabled. These disabled operations will be apparent by their omission in the location where they should appear on the row for a view. If you want to change the data for a view, you need to drop that view and create a new view with the appropriate SELECT statement that queries other existing tables. For more information, see <a href='http://en.wikipedia.org/wiki/View_(database)' target='_blank'>http://en.wikipedia.org/wiki/View_(database)</a>",
-	"help4" => "Writing a Select Statement for a New View",
-	"help4_x" => "When you create a new view, you must write an SQL SELECT statement that it will use as its data. A view is simply a read-only table that can be accessed and queried like a regular table, except it cannot be modified through insertion, column editing, or row editing. It is only used for conveniently fetching data.",
-	"help5" => "Export Structure to SQL File",
-	"help5_x" => "During the process for exporting to an SQL file, you may choose to include the queries that create the table and columns.",
-	"help6" => "Export Data to SQL File",
-	"help6_x" => "During the process for exporting to an SQL file, you may choose to include the queries that populate the table(s) with the current records of the table(s).",
-	"help7" => "Add Drop Table to Exported SQL File",
-	"help7_x" => "During the process for exporting to an SQL file, you may choose to include queries to DROP the existing tables before adding them so that problems do not occur when trying to create tables that already exist.",
-	"help8" => "Add Transaction to Exported SQL File",
-	"help8_x" => "During the process for exporting to an SQL file, you may choose to wrap the queries around a TRANSACTION so that if an error occurs at any time during the importation process using the exported file, the database can be reverted to its previous state, preventing partially updated data from populating the database.",
-	"help9" => "Add Comments to Exported SQL File",
-	"help9_x" => "During the process for exporting to an SQL file, you may choose to include comments that explain each step of the process so that a human can better understand what is happening."
 	
 	);
 ?>

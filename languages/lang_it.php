@@ -26,7 +26,6 @@ $lang = array(
 	"save_as" => "Salva con nome",
 	"options" => "Opzioni",
 	"no_opt" => "Nessuna opzione",
-	"help" => "Help",
 	"installed" => "installato",
 	"not_installed" => "non installato",
 	"done" => "fatto",
@@ -133,7 +132,6 @@ $lang = array(
 	"affected" => "interessata",
 	"blank_index" => "Il nome dell'indice non deve essere vuoto.",
 	"one_index" => "Devi specificare una colonna indice.",
-	"docu" => "Documentazione",
 	"license" => "Licenza",
 	"proj_site" => "Sito del progetto",
 	"bug_report" => "Questo potrebbe essere un bug che necessita di essere riportato a",
@@ -241,7 +239,6 @@ $lang = array(
 	"counting_skipped" => "Counting of records has been skipped for some tables because your database is comparably big and some tables don't have primary keys assigned to them so counting might be slow. Add a primary key to these tables or %sforce counting%s.",
 	"sel_state" => "Seleziona l'istruzione",
 	"delimit" => "Delimitatore",
-	"back_top" => "Torna in cima",
 	"choose_f" => "Scegli il File",
 	"instead" => "Invece di",
 	"define_in_col" => "Definisci index column(s)",
@@ -265,26 +262,6 @@ $lang = array(
 	"alter_col_not_recognized" => "non è stata rilevato il nome della nuova o della vecchia colonna",
 	"alter_unknown_operation" => "L'operazione ALTER non è riconosciuta!",
 	
-	/* Help documentation */
-	"help_doc" => "Documentazione",
-	"help1" => "SQLite Librerie di Estensioni",
-	"help1_x" => "%s usa Librerie di Estensioni di PHP che consentono di interagire con i database SQLite. Attualmente, %s supporta PDO, SQLite3, e SQLiteDatabase. Sia PDO che SQLite3 trattano la versione 3 di SQLite, mentre SQLiteDatabase tratta con la versione 2. Così, se la tua installazione PHP include più di una libreria di estesione SQLite, PDO e SQLite3 avranno la precedenza nel fare uso della tecnologia migliore. Comunque, se possiedi database che sono nella versione 2 di SQLite, %s forzerà ad usare SQLiteDatabase solamente per quei database. Non tutti i database hanno bisogno di essere della stessa versione. Durante la creazione del database, comunque, l'estenzione verrà utilizzata l'estenzione più avanzata.",
-	"help2" => "Creare un Nuovo Database",
-	"help2_x" => "Quando crei un nuovo database, il nome che inserisci sarà appeso con l'estensione del file appropriata (.db, .db3, .sqlite, etc.) se non la includi tu stesso. Il database verrà creato nella directory che tu specifichi come directory \$directory variable.",
-	"help3" => "Tabelle vs. Viste",
-	"help3_x" => "Sulla pagina del database principale, c'è una lista di tabele e viste. Poichè le view sono di sola lettura, certe operazioni verranno disabilitate. Al posto di queste operazioni disabilitate verranno mostrati spazi vuoti (omissioni) nella righa di comando della vista. Se vuoi cambiare il dato di una vista, devi cancellare la vista e crearne una nuova con l'istruzione SELECT desiderata che interroga altre tabelle esistenti. Per maggiori informazioni, guarda <a href='http://en.wikipedia.org/wiki/View_(database)' target='_blank'>http://en.wikipedia.org/wiki/View_(database)</a>",
-	"help4" => "Scrivere un'istruzione di selezione per una nuova View",
-	"help4_x" => "Quando crei una nuova view, devi scrivere un istruzione SQL SELECT che verrà usata come suo dato. Una view è semplicemente una tabella di sola lettura alla quale si può accedere e porre interrogazioni come una normale tabella , ad eccezione del fatto che non può essere modificata con inserimenti, editing di colonna, or editing di riga. E' usata soltamente per estrapolare dati.",
-	"help5" => "Exportazione della Struttura verso il file SQL",
-	"help5_x" => "Durante il processo di esportazione verso un file SQL, puoi scegliere di includere le istruzioni (query) che consentono di creare tabella e colonne.",
-	"help6" => "Esporta i dati verso il File SQL",
-	"help6_x" => "Durante il processo di esportazione verso un file SQL, puoi scegliere di includere le istruzioni (query) che popolano la tabella(e) with the current records of the table(s).",
-	"help7" => "Aggiungi Drop Table (cancella tabella) al File SQL esportato",
-	"help7_x" => "Durante il processo di esportazione verso un file SQL, puoi scegliere di includere le istruzioni (query) per cancellare (DROP) le tabelle esistenti prima di aggiungerle così che non occorreranno problemi cercando di crearetabelle che già esistono.",
-	"help8" => "Aggiungi Transaction al File SQLto esportato",
-	"help8_x" => "Durante il processo di esportazione verso un file SQL, puoi scegliere di includere le istruzioni (query) around a TRANSACTION so that if an error occurs at any time during the importation process using the exported file, the database can be reverted to its previous state, preventing partially updated data from populating the database.",
-	"help9" => "Aggiungi commenti al File esportato",
-	"help9_x" => "Durante il processo di esportazione verso un file SQL, puoi includere commenti spiegano ogni passo del processo così che umano può comprendere meglio cosa sta succedendo."
 	
 	);
 

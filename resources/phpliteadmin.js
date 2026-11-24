@@ -119,15 +119,6 @@ function toggleImports(val)
 	document.getElementById("importoptions_"+val).style.display = "block";	
 }
 
-function openHelp(section)
-{
-	PopupCenter('?help=1#'+section, "Help Section");	
-}
-var helpsec = false;
-function PopupCenter(pageURL, title)
-{
-	helpsec = window.open(pageURL, title, "toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=0,width=400,height=300");
-} 
 function checkLike(srchField, selOpt)
 {
 	if(selOpt=="LIKE%"){
@@ -137,52 +128,25 @@ function checkLike(srchField, selOpt)
 }
 
 // Cross Origin Request
-function createCORSRequest(method, url)
-{
-	var xhr = new XMLHttpRequest();
-	if ("withCredentials" in xhr)
-	{
-		xhr.open(method, url, true);
-	}
-	else if (typeof XDomainRequest != "undefined")
-	{
-		xhr = new XDomainRequest();
-		xhr.open(method, url);
-	}
-	else
-	{
-		xhr = null;
-	}
-	return xhr;
-}
-
-//check for updates
-function checkVersion(installed, url)
-{
-	var xhr = createCORSRequest('GET', url);
-	if (!xhr)
-		return false;
-
-	xhr.onload = function()
-	{
-		if(xhr.responseText.split("\n").indexOf(installed)==-1)
-		{
-			document.getElementById('oldVersion').style.display='inline';
-		}
-	};
-	xhr.send();
-}
-
 var codeEditor;
+var sqlTextarea;
 
-function sqleditor(textarea, tableDefinitions, tableDefault)
-{
-	codeEditor = CodeMirror.fromTextArea(textarea, {
+function createSqlCodeEditor(textarea, options) {
+	return CodeMirror.fromTextArea(textarea, Object.assign({
 		lineNumbers: true,
 		matchBrackets: true,
 		indentUnit: 4,
 		lineWrapping: true,
-		mode:  "text/x-sqlite",
+		mode: 'text/x-sqlite'
+	}, options));
+}
+
+function sqleditor(textarea, tableDefinitions, tableDefault)
+{
+	sqlTextarea = textarea;
+	if (typeof CodeMirror === 'undefined' || !CodeMirror.hint || !CodeMirror.hint.sql)
+		return;
+	codeEditor = createSqlCodeEditor(textarea, {
 		extraKeys: {"Ctrl-Space": "autocomplete"},
 		hint: CodeMirror.hint.sql,
 		hintOptions: {
@@ -197,12 +161,20 @@ function sqleditor(textarea, tableDefinitions, tableDefault)
 
 function sqleditorSetValue(text)
 {
-	codeEditor.doc.setValue(text);
+	if (codeEditor)
+		codeEditor.doc.setValue(text);
+	else
+		sqlTextarea.value = text;
 }
 
 function sqleditorInsertValue(text)
 {
-	codeEditor.doc.replaceRange(text, codeEditor.doc.getCursor("from"),codeEditor.doc.getCursor("to"));
+	if (codeEditor)
+		codeEditor.doc.replaceRange(text, codeEditor.doc.getCursor("from"), codeEditor.doc.getCursor("to"));
+	else if (sqlTextarea.setRangeText)
+		sqlTextarea.setRangeText(text, sqlTextarea.selectionStart, sqlTextarea.selectionEnd, 'end');
+	else
+		sqlTextarea.value += text;
 }
 
 /**
@@ -237,3 +209,222 @@ function checkFileSize(input)
 	}
 	return true;
 }
+// Keep native disclosures as the fallback in browsers without the Popover API.
+function enhanceWorkspacePopovers(workspace) {
+	if (!('popover' in HTMLElement.prototype))
+		return;
+
+	workspace.querySelectorAll('details[data-popover]').forEach(function (disclosure, index) {
+		var summary = disclosure.firstElementChild;
+		var panel = summary.nextElementSibling;
+		var wrapper = document.createElement('div');
+		var button = document.createElement('button');
+
+		wrapper.className = disclosure.className;
+		button.type = 'button';
+		button.className = summary.className;
+		button.textContent = summary.textContent;
+		if (summary.hasAttribute('aria-label'))
+			button.setAttribute('aria-label', summary.getAttribute('aria-label'));
+
+		panel.id = 'workspace-popover-' + index;
+		panel.setAttribute('popover', 'auto');
+		button.setAttribute('popovertarget', panel.id);
+		wrapper.append(button, panel);
+		disclosure.replaceWith(wrapper);
+	});
+}
+
+var inlineSqlAssets;
+
+function loadInlineSqlEditor(baseUrl) {
+	if (!inlineSqlAssets) {
+		function loadAsset(tag, path) {
+			return new Promise(function (resolve, reject) {
+				var asset = document.createElement(tag);
+				asset.onload = resolve;
+				asset.onerror = reject;
+				if (tag === 'link') {
+					asset.rel = 'stylesheet';
+					asset.href = baseUrl + path;
+				} else {
+					asset.src = baseUrl + path;
+				}
+				document.head.appendChild(asset);
+			});
+		}
+		inlineSqlAssets = Promise.all([
+			loadAsset('link', 'codemirror.min.css'),
+			loadAsset('script', 'codemirror.min.js').then(function () {
+				return loadAsset('script', 'mode/sql/sql.min.js');
+			})
+		]).then(function () {
+			return typeof CodeMirror !== 'undefined';
+		}, function () {
+			return false;
+		});
+	}
+	return inlineSqlAssets;
+}
+
+function enhanceInlineSql(region) {
+	var editor = region.querySelector('.inline-sql-editor');
+	var form = editor.querySelector('form');
+	var query = form.elements.queryval;
+	var summary = editor.querySelector('summary');
+	var cancel = form.querySelector('.inline-sql-cancel');
+	var run = form.querySelector('button[type="submit"]');
+	var feedback = form.querySelector('.inline-sql-feedback');
+	var inlineCodeEditor;
+
+	function runQuery() {
+		if (!run.disabled)
+			run.click();
+	}
+
+	editor.addEventListener('toggle', function () {
+		if (!editor.open)
+			return;
+		if (inlineCodeEditor) {
+			inlineCodeEditor.refresh();
+			inlineCodeEditor.focus();
+			return;
+		}
+
+		query.focus();
+		if (!window.Promise)
+			return;
+		loadInlineSqlEditor(editor.dataset.editorAssets).then(function (available) {
+			if (!available || !region.isConnected || !editor.open || inlineCodeEditor || run.disabled)
+				return;
+
+			var focused = document.activeElement === query;
+			var start = query.selectionStart;
+			var end = query.selectionEnd;
+			query.required = false;
+			inlineCodeEditor = createSqlCodeEditor(query, {
+				extraKeys: { 'Ctrl-Enter': runQuery, 'Cmd-Enter': runQuery }
+			});
+			inlineCodeEditor.getInputField().setAttribute('aria-label', form.querySelector('label').textContent);
+			if (focused) {
+				inlineCodeEditor.setSelection(inlineCodeEditor.posFromIndex(start), inlineCodeEditor.posFromIndex(end));
+				inlineCodeEditor.focus();
+			}
+		});
+	});
+	cancel.hidden = false;
+	cancel.addEventListener('click', function () {
+		form.reset();
+		if (inlineCodeEditor)
+			inlineCodeEditor.setValue(query.defaultValue);
+		feedback.textContent = '';
+		editor.open = false;
+		summary.focus();
+	});
+	query.addEventListener('keydown', function (event) {
+		if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+			event.preventDefault();
+			runQuery();
+		}
+	});
+
+	if (!window.fetch || !window.DOMParser)
+		return;
+
+	form.addEventListener('submit', async function (event) {
+		event.preventDefault();
+		if (run.disabled)
+			return;
+
+		run.disabled = cancel.disabled = true;
+		feedback.textContent = feedback.dataset.running;
+		try {
+			if (inlineCodeEditor)
+				inlineCodeEditor.save();
+			var response = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+			var documentResult = new DOMParser().parseFromString(await response.text(), 'text/html');
+			var results = documentResult.querySelector('[data-browse-results]');
+			if (!response.ok || !results)
+				throw new Error('Query response missing');
+
+			if (inlineCodeEditor)
+				inlineCodeEditor.toTextArea();
+			region.replaceWith(results);
+			enhanceInlineSql(results);
+			if (results.querySelector('.sql-result-error')) {
+				results.querySelector('.inline-sql-editor').open = true;
+				results.querySelector('textarea').focus();
+			} else {
+				results.querySelector('.inline-sql-summary').focus();
+			}
+		} catch (error) {
+			feedback.textContent = feedback.dataset.failed;
+		} finally {
+			run.disabled = cancel.disabled = false;
+		}
+	});
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+	var browseResults = document.querySelector('[data-browse-results]');
+	if (browseResults)
+		enhanceInlineSql(browseResults);
+
+	var workspace = document.querySelector('.workspace-layout');
+	if (!workspace)
+		return;
+
+	enhanceWorkspacePopovers(workspace);
+
+	var sidebar = workspace.querySelector('.sidebar-details');
+	var mobile = window.matchMedia('(max-width: 760px)');
+	function updateSidebar() {
+		sidebar.open = !mobile.matches;
+	}
+	updateSidebar();
+	if (mobile.addEventListener)
+		mobile.addEventListener('change', updateSidebar);
+
+	var activeTab = workspace.querySelector('.workspace-tabs .tab_pressed');
+	if (activeTab) {
+		activeTab.setAttribute('aria-current', 'page');
+		var activeMenu = activeTab.closest('.operation-menu');
+		if (activeMenu)
+			activeMenu.classList.add('is-current');
+	}
+
+	workspace.querySelectorAll('#main table.viewTable').forEach(function (table) {
+		if (table.parentElement.classList.contains('table-scroll'))
+			return;
+
+		var scroller = document.createElement('div');
+		scroller.className = 'table-scroll';
+		table.parentNode.insertBefore(scroller, table);
+		scroller.appendChild(table);
+	});
+
+	var selectAll = workspace.querySelector('.select-schema-all');
+	if (!selectAll)
+		return;
+
+	var form = selectAll.form;
+	var rows = Array.from(form.querySelectorAll('input[name="check[]"]'));
+	var bulkActions = form.querySelector('.bulk-actions');
+
+	function updateSelection() {
+		var count = rows.filter(function (checkbox) { return checkbox.checked; }).length;
+		selectAll.checked = count === rows.length;
+		selectAll.indeterminate = count > 0 && count < rows.length;
+		bulkActions.hidden = count === 0;
+	}
+
+	form.querySelectorAll('.bulk-select-button').forEach(function (button) {
+		button.hidden = true;
+	});
+	selectAll.hidden = false;
+	selectAll.addEventListener('change', function () {
+		rows.forEach(function (checkbox) { checkbox.checked = selectAll.checked; });
+	});
+	form.addEventListener('change', updateSelection);
+	updateSelection();
+});

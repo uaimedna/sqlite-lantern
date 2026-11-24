@@ -167,19 +167,34 @@ class Database
 				}
 			}
 		}
-		echo "<p>See ".PROJECT_INSTALL_LINK." for help.</p>";
-		
 		$this->print_db_list();
 
 		echo "</div>";
 	}
 	
 	// print the list of databases
-	public function print_db_list()
+	public function print_db_list($modern = false)
 	{
 		global $databases, $lang, $params, $currentDB;
-		echo "<fieldset style='margin:15px;' class='databaseList'><legend><b>".$lang['db_ch']."</b></legend>";
-		if(sizeof($databases)<10) //if there aren't a lot of databases, just show them as a list of links instead of drop down menu
+		echo "<fieldset class='databaseList'><legend><b>".$lang[$modern ? 'databases' : 'db_ch']."</b></legend>";
+		if($modern && count($databases)<10)
+		{
+			foreach($databases as $database)
+			{
+				$isActive = ($database === $currentDB);
+				echo "<div class='database-choice".($isActive ? " is-active" : "")."'>";
+				echo $params->getLink(array('database'=>$database['path'], 'table'=>null, 'view'=>'structure'),
+					htmlencode($database['name']), 'database-name'.($isActive ? ' active_db' : ''), htmlencode($database['name']));
+				if(!$database['readable'])
+					echo "<span class='database-access'>".$lang['unreadable']."</span>";
+				elseif(!$database['writable'] || !$database['writable_dir'])
+					echo "<span class='database-access'>".$lang['read_only']."</span>";
+				echo $params->getLink(array('download'=>$database['path'], 'table'=>null, 'token'=>$_SESSION[COOKIENAME.'token']),
+					'&darr;', 'database-download', htmlencode($lang['backup']));
+				echo "</div>";
+			}
+		}
+		elseif(sizeof($databases)<10) //if there aren't a lot of databases, just show them as a list of links instead of drop down menu
 		{
 			$i=0;
 			foreach($databases as $database)
@@ -201,7 +216,7 @@ class Database
 		else //there are a lot of databases - show a drop down menu
 		{
 			echo $params->getForm(array('table'=>null), 'get');
-			echo "<select name='database' onchange='this.form.submit()'>";
+			echo "<select name='database' aria-label='".htmlencode($lang['db_ch'])."' onchange='this.form.submit()'>";
 			foreach($databases as $database)
 			{
 				$perms_string = htmlencode('[' . ($database['readable'] ? 'r':' ' ) . ($database['writable'] && $database['writable_dir'] ? 'w':' ' ) . '] ');
@@ -265,7 +280,7 @@ class Database
 	{
 		if(file_exists($this->data['path'])) //make sure file exists before getting its contents
 		{
-			$content = strtolower(file_get_contents($this->data['path'], NULL, NULL, 0, 40)); //get the first 40 characters of the database file
+			$content = strtolower(file_get_contents($this->data['path'], false, NULL, 0, 40)); //get the first 40 characters of the database file
 			$p = strpos($content, "** this file contains an sqlite 2"); //this text is at the beginning of every SQLite2 database
 			if($p!==false) //the text is found - this is version 2
 				return 2;
@@ -403,6 +418,44 @@ class Database
 			return false;
 		$this->lastResult = $result;
 		return $result;
+	}
+
+	// The native SQLite3 extension can execute a write again on its first fetch.
+	public function queryForDisplay($query)
+	{
+		if($this->type !== 'SQLite3' || strncasecmp(ltrim($query), 'alter', 5) === 0)
+			return $this->query($query);
+
+		$statement = $this->db->prepare($query);
+		if($statement === false)
+			return false;
+
+		$readOnly = method_exists($statement, 'readOnly')
+			? $statement->readOnly()
+			: preg_match('/^\s*(SELECT|EXPLAIN)\b/i', $query);
+		if($readOnly)
+		{
+			$statement->close();
+			return $this->query($query);
+		}
+
+		$result = $statement->execute();
+		if($result === false)
+			return false;
+		$result->finalize();
+		$statement->close();
+		return true;
+	}
+
+	public function getResultColumnCount($result)
+	{
+		if(!is_object($result))
+			return 0;
+		if($this->type === 'PDO')
+			return $result->columnCount();
+		if($this->type === 'SQLite3')
+			return $result->numColumns();
+		return $result->numFields();
 	}
 
 	//wrapper for an INSERT and returns the ID of the inserted row
