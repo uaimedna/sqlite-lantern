@@ -457,6 +457,76 @@ details.database-info[open] { flex: 1 1 280px; }
 .sort-arrow { margin-inline-start: 4px; }
 .td1, .td2 { overflow-wrap: anywhere; }
 
+.browse-toolbar, .browse-toolbar form, .browse-option, .browse-pagination {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.browse-toolbar, .browse-toolbar form { flex-wrap: wrap; }
+.browse-toolbar { gap: 10px 16px; margin-block-end: 12px; }
+.browse-toolbar input, .browse-toolbar select { margin: 0; }
+.browse-toolbar input[name="numRows"] { inline-size: 4em; }
+.browse-toolbar input[name="startRow"] { inline-size: 5.5em; }
+.browse-pagination .button { min-inline-size: 34px; }
+
+.table-value { white-space: nowrap; }
+.cell-text-summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	inline-size: min(12rem, 44vw);
+	padding: 4px 6px;
+	border-radius: 4px;
+	list-style: none;
+}
+.cell-text-summary::-webkit-details-marker { display: none; }
+.cell-text-summary:hover { background: var(--selected); }
+.cell-text-summary::after {
+	flex: none;
+	inline-size: 6px;
+	block-size: 6px;
+	margin-inline-end: 2px;
+	border: solid var(--muted);
+	border-width: 0 1px 1px 0;
+	transform: rotate(45deg);
+	content: "";
+}
+.cell-text-preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cell-text-content {
+	max-block-size: 55vh;
+	margin: 12px 0 0;
+	padding: 12px;
+	overflow: auto;
+	overscroll-behavior: contain;
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	background: var(--surface);
+	font: 13px/1.5 var(--mono);
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
+}
+
+.cell-text-dialog {
+	inline-size: min(720px, calc(100% - 32px));
+	padding: 16px;
+	border: 1px solid var(--control-line);
+	border-radius: 8px;
+	background: var(--surface);
+	color: var(--ink);
+	box-shadow: 0 12px 34px rgb(0 0 0 / 11%), 0 2px 5px rgb(0 0 0 / 5%);
+}
+.cell-text-dialog:not([open]) { display: none; }
+.cell-text-dialog::backdrop { background: rgb(0 0 0 / 12%); }
+.cell-text-dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cell-text-dialog-header h2 { margin: 0; overflow-wrap: anywhere; }
+@supports (backdrop-filter: blur(12px)) {
+	.cell-text-dialog {
+		background: rgb(255 255 255 / 70%);
+		backdrop-filter: blur(12px);
+	}
+}
+
 .schema-table .select-column { inline-size: 28px; padding-inline: 8px 4px; }
 .schema-table .schema-records { inline-size: 105px; text-align: end; font-variant-numeric: tabular-nums; }
 .schema-table .schema-controls { inline-size: 195px; text-align: end; }

@@ -242,8 +242,12 @@ function highlightSql($sql)
 function renderSqlRows(Database $db, $result, $columns)
 {
 	echo "<div class='table-scroll'><table class='viewTable sql-result-table'><thead><tr>";
+	$columnNames = array();
 	for($column = 0; $column < $columns; $column++)
-		echo "<th scope='col' class='tdheader'>".htmlencode($db->getColumnName($result, $column))."</th>";
+	{
+		$columnNames[$column] = $db->getColumnName($result, $column);
+		echo "<th scope='col' class='tdheader'>".htmlencode($columnNames[$column])."</th>";
+	}
 	echo "</tr></thead><tbody>";
 
 	$rowCount = 0;
@@ -252,10 +256,10 @@ function renderSqlRows(Database $db, $result, $columns)
 		while($row = $db->fetch($result, 'num'))
 		{
 			echo "<tr>";
-			foreach($row as $value)
+			foreach($row as $column => $value)
 			{
 				echo "<td>";
-				echo $value === null ? "<i class='null'>NULL</i>" : htmlencode(subString($value));
+				renderTableValue($value, $columnNames[$column]);
 				echo "</td>";
 			}
 			echo "</tr>";
@@ -388,15 +392,41 @@ function htmlencode($value, $flags=ENT_QUOTES, $encoding ="UTF-8")
 	return htmlentities($value, $flags, $encoding);
 }
 
-// reduce string chars
-function subString($str)
+// Render long values as compact previews with access to the original text.
+function renderTableValue($value, $column, $search = null)
 {
-	global $charsNum, $params;
-	if($charsNum > 10 && (!isset($params->fulltexts) || !$params->fulltexts) && mb_strlen($str)>$charsNum)
+	global $charsNum, $lang, $params;
+
+	if($value === null || $value === '')
 	{
-		$str = mb_substr($str, 0, $charsNum).'...';
+		echo $value === null ? "<i class='null'>NULL</i>" : "&nbsp;";
+		return;
 	}
-	return $str;
+
+	$text = (string) $value;
+	$compact = $charsNum > 10 && empty($params->fulltexts);
+	$preview = $text;
+	if($compact)
+	{
+		$limit = min(48, (int) $charsNum);
+		$preview = preg_match('/\A[^\r\n]{0,'.$limit.'}/u', $text, $match) ? $match[0] : substr($text, 0, $limit);
+	}
+
+	$html = $search === null
+		? htmlencode($preview, ENT_QUOTES | ENT_SUBSTITUTE)
+		: markSearchWords($preview, $column, $search);
+	if($preview === $text)
+	{
+		echo $compact ? "<span class='table-value'>".$html."</span>" : $html;
+		return;
+	}
+
+	$title = $column !== '' ? $column : $lang['val'];
+	$label = htmlencode(sprintf($lang['show_cell_value'], $title));
+	echo "<details class='cell-text'><summary class='cell-text-summary' data-column='".htmlencode($title)."' aria-label='".$label."' title='".$label."'>";
+	echo "<span class='cell-text-preview'>".$html."&hellip;</span></summary>";
+	echo "<pre class='cell-text-content' tabindex='0'><code>".htmlencode($text, ENT_QUOTES | ENT_SUBSTITUTE)."</code></pre>";
+	echo "</details>";
 }
 
 // marks searchwords and htmlencodes correctly
@@ -1600,14 +1630,14 @@ if(is_file('themes/'.$theme)) $theme = 'themes/'.$theme;
 $customTheme = is_file($theme);
 echo $customTheme
 	? "<link href='".htmlencode($theme)."' rel='stylesheet'>"
-	: "<link href='?resource=css&amp;v=".VERSION."-browse-polish' rel='stylesheet'>";
+	: "<link href='?resource=css&amp;v=".VERSION."-browse-cells' rel='stylesheet'>";
 
 if($auth->isAuthorized())
 {
 	//- Javascript include
 	?>
 	<!-- JavaScript Support -->
-	<script src='?resource=javascript&amp;v=<?php echo VERSION; ?>-browse-polish'></script>
+	<script src='?resource=javascript&amp;v=<?php echo VERSION; ?>-browse-cells'></script>
 	<script type="text/javascript">
 	var fileUploadMaxSize = <?php echo fileUploadMaxSize(); ?>;
 	var fileUploadMaxSizeErrorMsg = '<?php echo $lang['err'].': \n'.$lang['max_file_size']; ?>';
@@ -2330,76 +2360,44 @@ if(isset($_GET['action']) && !isset($_GET['confirm']))
 			$totalRows = $resultRows['count'];
 			$shownRows = min($resultRows['count']-$startRow, $numRows);
 
-			//- HTML: pagination buttons
-			$lastPage = intval($totalRows / $params->numRows);
-			$remainder = intval($totalRows % $params->numRows);
-			if($remainder==0)
-				$remainder = $params->numRows;
+			$nextRow = $startRow + $numRows;
+			$hasNextPage = $nextRow < $totalRows;
+			$chartView = isset($_SESSION[COOKIENAME.'viewtype']) && $_SESSION[COOKIENAME.'viewtype'] !== 'table';
 
-			echo "<div style=''>";
-			//previous button
-			if($_GET['startRow']>0)
-			{
-				echo "<div style='float:left;'>";
-				echo $params->getForm(array('action'=>$_GET['action']),'get');
-				echo "<input type='hidden' name='startRow' value='0'/>";
-				echo "<input type='submit' value='&larr;&larr;' class='btn'/> ";
-				echo "</form>";
-				echo "</div>";
-				echo "<div style='float:left; overflow:hidden; margin-right:20px;'>";
-				echo $params->getForm(array('action'=>$_GET['action']),'get');
-				echo "<input type='hidden' name='startRow' value='".max(0,intval($_GET['startRow']-$params->numRows))."'/>";
-				echo "<input type='submit' value='&larr;' class='btn'/> ";
-				echo "</form>";
-				echo "</div>";
-			}
+			echo "<div class='browse-toolbar'>";
+			echo $params->getForm(array('action'=>$_GET['action'], 'numRows'=>null), 'get');
+			echo "<input type='submit' value='".htmlencode($lang['show'])."' name='show' class='btn'/>";
+			echo "<input type='text' name='numRows' inputmode='numeric' aria-label='".htmlencode($lang['rows'])."' value='".$numRows."'/>";
+			echo "<label class='browse-option'>".$lang['rows_records']." ";
+			echo "<input type='text' name='startRow' inputmode='numeric' value='".($hasNextPage ? $nextRow : 0)."'/></label>";
+			echo "<label class='browse-option'>".$lang['as_a']." <select name='viewtype'>";
+			echo "<option value='table'".($chartView ? '' : ' selected').">".$lang['tbl']."</option>";
+			echo "<option value='chart'".($chartView ? ' selected' : '').">".$lang['chart']."</option>";
+			echo "</select></label></form>";
 
-			//show certain number buttons
-			echo "<div style='float:left;'>";
-			echo $params->getForm(array('action'=>$_GET['action'], 'numRows'=>null),'get');
-			echo "<input type='submit' value='".$lang['show']." : ' name='show' class='btn'/> ";
-			echo "<input type='text' name='numRows' style='width:50px;' value='".$params->numRows."'/> ";
-			echo $lang['rows_records'];
-
-			if(intval($_GET['startRow']+$params->numRows) < $totalRows)
-				echo "<input type='text' name='startRow' style='width:90px;' value='".intval($_GET['startRow']+$params->numRows)."'/>";
-			else
-				echo "<input type='text' name='startRow' style='width:90px;' value='0'/> ";
-			echo $lang['as_a'];
-			echo " <select name='viewtype'>";
-			if(!isset($_SESSION[COOKIENAME.'viewtype']) || $_SESSION[COOKIENAME.'viewtype']=="table")
+			$pageLinks = array();
+			if($startRow > 0)
 			{
-				echo "<option value='table' selected='selected'>".$lang['tbl']."</option>";
-				echo "<option value='chart'>".$lang['chart']."</option>";
+				$pageLinks[] = array(0, '&larr;&larr;', 'first_page');
+				$pageLinks[] = array(max(0, $startRow - $numRows), '&larr;', 'previous_page');
 			}
-			else
+			if($hasNextPage)
 			{
-				echo "<option value='table'>".$lang['tbl']."</option>";
-				echo "<option value='chart' selected='selected'>".$lang['chart']."</option>";
+				$pageLinks[] = array($nextRow, '&rarr;', 'next_page');
+				$pageLinks[] = array(intdiv($totalRows - 1, $numRows) * $numRows, '&rarr;&rarr;', 'last_page');
 			}
-			echo "</select>";
-			echo "</form>";
+			if($pageLinks)
+			{
+				echo "<nav class='browse-pagination' aria-label='".htmlencode($lang['pagination'])."'>";
+				foreach($pageLinks as list($offset, $arrow, $labelKey))
+				{
+					$label = htmlencode($lang[$labelKey]);
+					$url = $params->getURL(array('action'=>$_GET['action'], 'startRow'=>$offset));
+					echo "<a class='button primary-button' href='".$url."' aria-label='".$label."' title='".$label."'>".$arrow."</a>";
+				}
+				echo "</nav>";
+			}
 			echo "</div>";
-
-			//next button
-			if(intval($_GET['startRow']+$params->numRows)<$totalRows)
-			{
-				echo "<div style='float:left; margin-left:20px; '>";
-				echo $params->getForm(array('action'=>$_GET['action']),'get');
-				echo "<input type='hidden' name='startRow' value='".intval($_GET['startRow']+$params->numRows)."'/>";
-				echo "<input type='submit' value='&rarr;' class='btn'/> ";
-				echo "</form>";
-				echo "</div>";
-				echo "<div style='float:left; '>";
-				echo $params->getForm(array('action'=>$_GET['action']),'get');
-				echo "<input type='hidden' name='startRow' value='".intval($totalRows-$remainder)."'/>";
-				echo "<input type='submit' value='&rarr;&rarr;' class='btn'/> ";
-				echo "</form>";
-				echo "</div>";
-			}
-			echo "<div style='clear:both;'></div>";
-			echo "</div>";
-
 
 			//- Show results
 			if($shownRows>0)
@@ -2491,11 +2489,9 @@ if(isset($_GET['action']) && !isset($_GET['confirm']))
 								echo $tdWithClass;
 							else
 								echo $tdWithClassLeft;
-							if($row[$j]==="")
-								echo "&nbsp;";
-							elseif($row[$j]===NULL)
-								echo "<i class='null'>NULL</i>";
-							elseif(preg_match('/^BLOB/i', $tableInfo[$j]['type']) && !$hexblobs)
+							$value = $row[$j];
+							$isBlob = preg_match('/^BLOB/i', $tableInfo[$j]['type']);
+							if($isBlob && !$hexblobs && $value !== null && $value !== '')
 							{
 								if($target_table_type === 'table')
 								{
@@ -2508,14 +2504,10 @@ if(isset($_GET['action']) && !isset($_GET['confirm']))
 								echo 'Size: '.number_format(strlen($row[$j])).' Bytes';
 								echo "</div>";
 							}
-							elseif(preg_match('/^BLOB/i', $tableInfo[$j]['type']) && $hexblobs)
-							{
-								echo htmlencode(subString(bin2hex($row[$j])));
-							}
-							elseif(isset($search))
-								echo markSearchWords(subString($row[$j]),$tableInfo[$j]['name'], $search);
+							elseif($isBlob && $hexblobs && $value !== null)
+								renderTableValue(bin2hex($value), $tableInfo[$j]['name']);
 							else
-								echo htmlencode(subString($row[$j]));
+								renderTableValue($value, $tableInfo[$j]['name'], $search ?? null);
 							echo "</td>";
 						}
 						echo "</tr>";
@@ -3804,6 +3796,10 @@ echo "<a href='".UPSTREAM_URL."'>".$lang['upstream']."</a>";
 echo "<a href='https://www.gnu.org/licenses/gpl-3.0.html'>".$lang['license']."</a>";
 echo "</footer>";
 echo $customTheme ? "</td></tr></table>" : "</main></div>";
+echo "<dialog class='cell-text-dialog' id='cell-text-dialog' aria-labelledby='cell-text-title'>";
+echo "<div class='cell-text-dialog-header'><h2 id='cell-text-title'></h2>";
+echo "<form method='dialog'><button type='submit' class='primary-button' autofocus>".htmlencode($lang['close_cell_value'])."</button></form></div>";
+echo "<pre class='cell-text-content' tabindex='0'></pre></dialog>";
 $db->close(); //close the database
 echo "</body>";
 echo "</html>";

@@ -193,6 +193,13 @@ $lang = array(
 	"recent_queries" => "Recent Queries",
 	"full_texts" => "Show full texts",
 	"no_full_texts" => "Shorten long texts",
+	"show_cell_value" => "Show full value for %s",
+	"close_cell_value" => "Close",
+	"pagination" => "Pagination",
+	"first_page" => "First page",
+	"previous_page" => "Previous page",
+	"next_page" => "Next page",
+	"last_page" => "Last page",
 	
 	"ques_table_empty" => "Are you sure you want to empty the table(s) '%s'?",
 	"ques_table_drop" => "Are you sure you want to drop the table(s) / view(s) '%s'?",

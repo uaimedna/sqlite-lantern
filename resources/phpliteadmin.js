@@ -365,7 +365,30 @@ function enhanceInlineSql(region) {
 	});
 }
 
+function enhanceCellText() {
+	var dialog = document.getElementById('cell-text-dialog');
+	if (!dialog || typeof dialog.showModal !== 'function')
+		return;
+
+	var title = dialog.querySelector('h2');
+	var content = dialog.querySelector('pre');
+	document.addEventListener('click', function (event) {
+		var summary = event.target.closest('.cell-text-summary');
+		if (!summary)
+			return;
+
+		event.preventDefault();
+		title.textContent = summary.dataset.column;
+		content.textContent = summary.nextElementSibling.textContent;
+		dialog.showModal();
+	});
+	dialog.addEventListener('close', function () {
+		content.textContent = '';
+	});
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+	enhanceCellText();
 	var browseResults = document.querySelector('[data-browse-results]');
 	if (browseResults)
 		enhanceInlineSql(browseResults);
