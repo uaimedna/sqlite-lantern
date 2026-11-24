@@ -37,6 +37,6 @@ To try the install locally, run `php -S 127.0.0.1:8000` from the folder containi
 
 ## Credits and license
 
-SQLite Lantern is a fork of [phpLiteAdmin](https://github.com/phpLiteAdmin/pla/tree/3fa9fedad19dc407a1786f97ba2b18a3c7b803bc). See the [original credits and copyright notices](docs/header.txt).
+SQLite Lantern is based on [phpLiteAdmin](https://github.com/phpLiteAdmin/pla/tree/3fa9fedad19dc407a1786f97ba2b18a3c7b803bc). See the [original credits and copyright notices](docs/header.txt).
 
 Licensed under the [GNU GPL v3 or later](LICENSE).
