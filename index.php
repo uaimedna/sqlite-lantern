@@ -31,7 +31,7 @@ spl_autoload_register('pla_autoload');
 //- Initialization
 
 // load optional configuration file
-$config_filename = './phpliteadmin.config.php';
+$config_filename = __DIR__ . '/phpliteadmin.config.php';
 if (is_readable($config_filename))
 {
 	include_once $config_filename;
@@ -3482,7 +3482,7 @@ if(!$target_table && !isset($_GET['confirm']) && (!isset($_GET['action']) || (is
 		if ($auth->isPasswordDefault())
 		{
 			echo "<div class='confirm' style='margin:20px 0px;'>";
-			echo sprintf($lang['warn_passwd'],(is_readable('phpliteadmin.config.php')?'phpliteadmin.config.php':basename(__FILE__)))."<br />".$lang['warn0'];
+			echo sprintf($lang['warn_passwd'],(is_readable($config_filename)?'phpliteadmin.config.php':basename(__FILE__)))."<br />".$lang['warn0'];
 			echo "</div>";
 		}
 
