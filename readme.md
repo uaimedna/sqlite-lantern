@@ -2,6 +2,8 @@
 
 SQLite Lantern is an open-source, self-hosted SQLite database browser and editor written in PHP. Browse tables, edit records, and run SQL against your `.sqlite` and `.db` files from the web. The app builds into a single PHP file.
 
+[Try the live demo](https://playground.wordpress.net/?mode=seamless&storage=temp&can-save=no&page-title=SQLite%20Lantern&blueprint-url=https%3A%2F%2Fraw.githubusercontent.com%2Fuaimedna%2Fsqlite-lantern%2Fmaster%2Fdemo%2Fblueprint.json) with a sample database. Changes stay in your browser and reset when you reload.
+
 ![SQLite Lantern table browser showing records, compact row actions, and a highlighted SQL query](assets/screenshots/sqlite-table-browser.jpg)
 
 ## What you can do
