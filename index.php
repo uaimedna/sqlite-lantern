@@ -39,7 +39,7 @@ if (is_readable($config_filename))
 
 //constants 1
 define("PROJECT", "SQLite Lantern");
-define("VERSION", "0.1.0-dev");
+define("VERSION", "0.1.0");
 define("CODEMIRROR_URL", "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/");
 define("FORCETYPE", false); //force the extension that will be used (set to false in almost all circumstances except debugging, possible values: false, "PDO", "SQLite3", "SQLiteDatabase")
 define("SYSTEMPASSWORD", $password); // Makes things easier.

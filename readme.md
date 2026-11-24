@@ -15,7 +15,7 @@ SQLite Lantern is an open-source, self-hosted SQLite database browser and editor
 
 ## How to install
 
-Use PHP 8.3 with the `pdo_sqlite` or `sqlite3` extension enabled. Clone the repository and build the single PHP file.
+Use PHP 8.3 with the `pdo_sqlite` or `sqlite3` extension enabled. Download [sqlite-lantern.php from the latest release](https://github.com/uaimedna/sqlite-lantern/releases/latest/download/sqlite-lantern.php) or build it from source.
 
 ```sh
 git clone https://github.com/uaimedna/sqlite-lantern.git
