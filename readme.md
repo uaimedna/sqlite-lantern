@@ -11,6 +11,28 @@ SQLite Lantern is an open-source, self-hosted SQLite database browser and editor
 - Create tables and views, edit columns, and manage indexes and triggers.
 - Switch between database files, import and export SQL or CSV, and download a copy of a database file.
 
+## How to install
+
+Use PHP 8.3 with the `pdo_sqlite` or `sqlite3` extension enabled. Clone the repository and build the single PHP file.
+
+```sh
+git clone https://github.com/uaimedna/sqlite-lantern.git
+cd sqlite-lantern
+php build.php
+```
+
+Copy `sqlite-lantern.php` to a directory served by PHP. Create `phpliteadmin.config.php` next to it with your own password and the absolute path to the folder that contains your SQLite files.
+
+```php
+<?php
+$password = 'replace-with-a-long-unique-password';
+$directory = '/absolute/path/to/your/databases';
+```
+
+Keep your database folder outside the web root. Give PHP read access to the database files and their folder. For editing, give PHP write access to both as well. Open `sqlite-lantern.php` over HTTPS and sign in.
+
+To try the install locally, run `php -S 127.0.0.1:8000` from the folder containing the installed files and open [SQLite Lantern on localhost](http://127.0.0.1:8000/sqlite-lantern.php).
+
 ## Credits and license
 
 SQLite Lantern is a fork of [phpLiteAdmin](https://github.com/phpLiteAdmin/pla/tree/3fa9fedad19dc407a1786f97ba2b18a3c7b803bc). See the [original credits and copyright notices](docs/header.txt).
